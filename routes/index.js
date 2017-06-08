@@ -13,7 +13,6 @@ router.get('/', function(req, res, next) {
                 let currentUser = results.data;
                 twit.direct_messages.then((results) => {
                     let direct_messages = results.data;
-                    console.log(direct_messages.events);
                     res.render('index', { friends: friends, timeline: timeline, timeSinceTweet: timeSinceTweet, currentUser: currentUser, direct_messages: direct_messages });
                 });
             });

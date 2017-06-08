@@ -94,7 +94,7 @@ block content
               a Jill Spore 
             ul.app--message--conversation
               each message in direct_messages.events
-                li(class=currentUser.id === message.message_create.sender_id ? 'app--message--me' : 'app--message')
+                li(class=currentUser.id === parseInt(message.message_create.sender_id) ? 'app--message--me' : 'app--message')
                   .app--avatar(style='background-image: url("/static/images/m-spore.png")')
                     img(src='/static/images/m-spore.png')
                   p.app--message--text #{message.message_create.message_data.text} 
