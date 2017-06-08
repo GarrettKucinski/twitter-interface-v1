@@ -8,34 +8,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const getCredentials = require('./config');
-const Twit = require('twit');
 
 const index = require('./routes/index');
 
 const app = express();
-
-// Set up twit to access twitter api
-const twit = new Twit({
-    consumer_key: getCredentials.consumerKey,
-    consumer_secret: getCredentials.consumerSecret,
-    access_token: getCredentials.accessToken,
-    access_token_secret: getCredentials.accessTokenSecret
-});
-
-twit.get('statuses/home_timeline', { screen_name: 'garrettdesigns' }, (error, data, response) => {
-    console.log(response.statusCode);
-}).then(results => {
-    const timeline = results.data;
-    console.log(timeline);
-    app.set('timeline', timeline);
-});
-
-twit.get('friends/list', { screen_name: 'garrettdesigns' }, (error, data, response) => {
-    console.log(response.statusCode);
-}).then(results => {
-    const friends = results.data;
-    app.set('friends', friends);
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
