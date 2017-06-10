@@ -11,9 +11,20 @@ router.get('/', function(req, res, next) {
             let friends = results.data;
             twit.currentUser.then((results) => {
                 let currentUser = results.data;
-                twit.direct_messages.then((results) => {
-                    let direct_messages = results.data;
-                    res.render('index', { friends: friends, timeline: timeline, timeSinceTweet: timeSinceTweet, currentUser: currentUser, direct_messages: direct_messages });
+                console.log(currentUser);
+                twit.incomingMessages.then((results) => {
+                    let incomingMessages = results.data;
+                    twit.outgoingMessages.then((results) => {
+                        let outgoingMessages = results.data;
+                        res.render('index', {
+                            friends: friends,
+                            timeline: timeline,
+                            timeSinceTweet: timeSinceTweet,
+                            currentUser: currentUser,
+                            incomingMessages: incomingMessages,
+                            outgoingMessages: outgoingMessages
+                        });
+                    });
                 });
             });
         });
