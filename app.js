@@ -17,6 +17,8 @@ const Twit = require('twit');
 const twit = new Twit(apiCredentials);
 
 const index = require('./routes/index');
+const error = require('./routes/error');
+
 const app = express();
 
 // VIEW ENGINE SETUP
@@ -43,6 +45,7 @@ app.use(sassMiddleware({
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/error', error);
 
 app.post('/', (req, res) => {
     twit.post('statuses/update', { status: req.body.tweetContent }, (error, data) => {
@@ -60,15 +63,5 @@ app.use((req, res, next) => {
     next(err);
 });
 
-// error handler
-app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
 
 module.exports = app;
