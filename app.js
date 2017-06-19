@@ -50,10 +50,10 @@ app.use('/error', error);
 app.post('/', (req, res) => {
     twit.post('statuses/update', { status: req.body.tweetContent }, (error, data) => {
         console.log('tweet data', data);
-    });
-    setTimeout(_ => {
         res.redirect('/');
-    }, 300);
+    });
+    // setTimeout(_ => {
+    // }, 300);
 });
 
 // catch 404 and forward to error handler
