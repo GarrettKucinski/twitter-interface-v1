@@ -3,5 +3,5 @@ extends layout
 block content
   .bounds.error-page
     .error-msg
-      h1 #{status} #{message}
-      p We're sorry, an error has occured, please try your request again later.
+      h1.error-code #{status} #{ status === 404 ? 'Not Found' : 'Server Error'}
+      h2 #{message}

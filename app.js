@@ -54,13 +54,12 @@ app.post('/', (req, res) => {
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-    const err = new Error('Not Found');
+    const err = new Error('We\'re sorry, it seems that page was not found.');
     err.status = 404;
     next(err);
 });
 
 app.use((err, req, res, next) => {
-
     twit.get('users/show', { screen_name: 'realgarrettk' }).then(results => {
         // error handler
         // render the error page
