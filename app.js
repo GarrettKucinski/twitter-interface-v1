@@ -17,7 +17,6 @@ const Twit = require('twit');
 const twit = new Twit(apiCredentials);
 
 const index = require('./routes/index');
-const error = require('./routes/error');
 
 const app = express();
 
@@ -45,15 +44,12 @@ app.use(sassMiddleware({
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/error', error);
 
 app.post('/', (req, res) => {
     twit.post('statuses/update', { status: req.body.tweetContent }, (error, data) => {
         console.log('tweet data', data);
         res.redirect('/');
     });
-    // setTimeout(_ => {
-    // }, 300);
 });
 
 // catch 404 and forward to error handler
@@ -61,6 +57,37 @@ app.use((req, res, next) => {
     const err = new Error('Not Found');
     err.status = 404;
     next(err);
+});
+
+app.use((err, req, res, next) => {
+
+    twit.get('users/show', { screen_name: 'realgarrettk' }).then(results => {
+        // error handler
+        // render the error page
+        res.status(err.status || 500);
+
+        if (res.statusCode !== 404) {
+            res.locals.message = 'Sorry! Your tweets could not be retrieved, please check back later';
+        } else {
+            res.locals.message = err.message;
+        }
+
+        if (app.get('env') === 'development') {
+            res.render('error', {
+                currentUser: results.data,
+                status: res.statusCode,
+                error: err
+            });
+        } else {
+            res.render('error', {
+                currentUser: results.data,
+                status: res.statusCode,
+                error: {}
+            });
+        }
+    }).catch(error => {
+        console.log(error.message);
+    });
 });
 
 

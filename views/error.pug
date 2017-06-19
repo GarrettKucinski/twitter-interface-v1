@@ -1,5 +1,7 @@
 extends layout
 
 block content
-  h1 #{message}
-  h2 #{status}
+  .bounds.error-page
+    .error-msg
+      h1 #{status} #{message}
+      p We're sorry, an error has occured, please try your request again later.
