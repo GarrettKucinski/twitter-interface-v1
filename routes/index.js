@@ -1,33 +1,31 @@
+"use strict";
+
 const express = require('express');
 const router = express.Router();
-const twit = require('../utils/tweets');
+// const twit = require('../utils/tweets');
+const apiCredentials = require('../config.js');
+const Twit = require('twit');
+
+const twit = new Twit(apiCredentials);
 const timeSinceTweet = require('../utils/time-since-tweet');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-    twit.timeline.then((results) => {
-        let timeline = results.data;
-        twit.friends.then((results) => {
-            let friends = results.data;
-            twit.currentUser.then((results) => {
-                let currentUser = results.data;
-                twit.incomingMessages.then((results) => {
-                    let incomingMessages = results.data;
-                    twit.outgoingMessages.then((results) => {
-                        let outgoingMessages = results.data;
-                        res.render('index', {
-                            friends: friends,
-                            timeline: timeline,
-                            timeSinceTweet: timeSinceTweet,
-                            currentUser: currentUser,
-                            incomingMessages: incomingMessages,
-                            outgoingMessages: outgoingMessages
-                        });
-                    });
-                });
-            });
+    Promise.all([
+        twit.get('statuses/user_timeline', { screen_name: 'realgarrettk', count: 5 }),
+        twit.get('friends/list', { screen_name: 'realgarrettk', count: 5 }),
+        twit.get('users/show', { screen_name: 'realgarrettk' }),
+        twit.get('direct_messages', { count: 5 })
+    ]).then(results => {
+        res.render('index', {
+            timeline: results[0].data,
+            friends: results[1].data,
+            timeSinceTweet: timeSinceTweet,
+            currentUser: results[2].data,
+            incomingMessages: results[3].data
         });
+    }).catch(error => {
+        console.log(error.message);
     });
 });
 

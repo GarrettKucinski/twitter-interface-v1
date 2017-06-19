@@ -9,7 +9,12 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
-const getCredentials = require('./config');
+// const twit = require('./utils/tweets');
+
+const apiCredentials = require('./config.js');
+const Twit = require('twit');
+
+const twit = new Twit(apiCredentials);
 
 const index = require('./routes/index');
 const app = express();
@@ -38,6 +43,15 @@ app.use(sassMiddleware({
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+
+app.post('/', (req, res) => {
+    twit.post('statuses/update', { status: req.body.tweetContent }, (error, data) => {
+        console.log('tweet data', data);
+    });
+    setTimeout(_ => {
+        res.redirect('/');
+    }, 300);
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

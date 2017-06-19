@@ -16,12 +16,12 @@ block content
                 a Sign Out
   
   .app--tweet
-    form(method='post' action='/')
+    form#tweet-form(method='post' action='/')
       .circle--fluid
         .circle--fluid--cell.circle--fluid--primary.align-bottom.app--tweet--post
-          .app--avatar(style='background-image: url("/static/images/m-spore.png")')
-            img(src='/static/images/m-spore.png')
-          input(type='text').circle--textarea--input(placeholder='What\'s happening?')
+          .app--avatar(style=`background-image: url('${currentUser.profile_image_url}')`)
+            img(src=`${currentUser.profile_image_url}`)
+          input#tweet-box.circle--textarea--input(placeholder='What\'s happening?', type='text', name='tweetContent')
           strong#tweet-char.app--tweet--char 140
         .circle--fluid--cell.align-bottom
           button(type='submit')#tweeter.button.button-primary Tweet
