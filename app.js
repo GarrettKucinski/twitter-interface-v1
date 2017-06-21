@@ -9,12 +9,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
-// const twit = require('./utils/tweets');
-
-const apiCredentials = require('./config.js');
-const Twit = require('twit');
-
-const twit = new Twit(apiCredentials);
+const twit = require('./utils/tweets');
 
 const index = require('./routes/index');
 
@@ -41,13 +36,13 @@ app.use(sassMiddleware({
     outputStyle: 'compressed',
     prefix: '/static/stylesheets'
 }));
+
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 
 app.post('/', (req, res) => {
     twit.post('statuses/update', { status: req.body.tweetContent }, (error, data) => {
-        console.log('tweet data', data);
         res.redirect('/');
     });
 });
@@ -60,7 +55,8 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    twit.get('users/show', { screen_name: 'realgarrettk' }).then(results => {
+    twit.get('account/verify_credentials').then(results => {
+        const userData = results.data;
         // error handler
         // render the error page
         res.status(err.status || 500);
@@ -73,7 +69,7 @@ app.use((err, req, res, next) => {
 
         if (app.get('env') === 'development') {
             res.render('error', {
-                currentUser: results.data,
+                currentUser: userData.screen_name,
                 status: res.statusCode,
                 error: err
             });
